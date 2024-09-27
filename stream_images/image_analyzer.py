@@ -49,14 +49,18 @@ def extract_info(image_path, save_cropped=False):
 
     return temperature, timestamp, average_brightness
 
+archives = {
+    #"archiveA": ("cam_a", 1),
+    "archiveB": ("cam_b", 100),
+}
 
-# List to hold data for CSV
-data_rows = []
+for archive, (image_directory, start) in archives.items():
+    # List to hold data for CSV
+    data_rows = []
 
-# Start checking numbered files sequentially
-file_number = 1
+    # Start checking numbered files sequentially
+    file_number = start
 
-for image_directory in ("cam_a", "cam_b"):
     while True:
         filename = f"{str(file_number).zfill(6)}.jpg"  # Assuming the format is 000000.jpg, 000001.jpg, etc.
         image_path = os.path.join(image_directory, filename)
@@ -79,9 +83,10 @@ for image_directory in ("cam_a", "cam_b"):
         
 
     # Save results to CSV
-    with open(os.path.join(image_directory, "data.csv"), mode='w', newline='') as csv_file:
+    output_path = os.path.join(image_directory, "data.csv")
+    with open(output_path, mode='w', newline='') as csv_file:
         csv_writer = csv.writer(csv_file)
         csv_writer.writerow(['Filename', 'Datetime', 'Temperature', 'Average Brightness'])
         csv_writer.writerows(data_rows)
 
-    print(f"Data saved to {output_csv}")
+    print(f"Data saved to {output_path}")
